@@ -1,0 +1,9 @@
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+Pluto.exe
+*.sln
+.vs/
+*.vcxproj.user
