@@ -7,3 +7,8 @@ Pluto.exe
 *.sln
 .vs/
 *.vcxproj.user
+Content/ParagonRevenant/
+Content/FirstPerson/
+Content/FirstPersonArms/
+Content/FPWeapon/
+Content/ControlRig/
