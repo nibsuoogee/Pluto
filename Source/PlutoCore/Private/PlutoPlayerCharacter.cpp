@@ -3,8 +3,13 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+
+#include "BulletProjectile.h"
+#include "Animation/AnimInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "Log.h"
 
@@ -64,6 +69,10 @@ void APlutoPlayerCharacter::BeginPlay()
 		FAttachmentTransformRules::SnapToTargetNotIncludingScale,
 		TEXT("GripPoint"));
 
+	World = GetWorld();
+
+	AnimInstance = HandsMesh->GetAnimInstance();
+
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -96,12 +105,38 @@ void APlutoPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 		enhancedInputComponent->BindAction(inputToCrouch, ETriggerEvent::Triggered, this, &APlutoPlayerCharacter::TriggerCrouch);
 		enhancedInputComponent->BindAction(inputToProne, ETriggerEvent::Triggered, this, &APlutoPlayerCharacter::TriggerProne);
 		enhancedInputComponent->BindAction(inputToSprint, ETriggerEvent::Triggered, this, &APlutoPlayerCharacter::TriggerSprint);
+
+		enhancedInputComponent->BindAction(inputToShoot, ETriggerEvent::Triggered, this, &APlutoPlayerCharacter::OnFire);
 	}
 }
 
 void APlutoPlayerCharacter::OnFire()
 {
+	if(World != NULL)
+	{
+		SpawnRotation = GetControlRotation();
 
+		SpawnLocation = ((MuzzleLocation != nullptr) ?
+			MuzzleLocation->GetComponentLocation() :
+			GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+
+		FActorSpawnParameters ActorSpawnParams;
+		ActorSpawnParams.SpawnCollisionHandlingOverride =
+			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+		World->SpawnActor<ABulletProjectile>(Projectile,
+			SpawnLocation, SpawnRotation, ActorSpawnParams);
+
+		if(FireSound != NULL)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+		}
+
+		if(FireAnimation != NULL && AnimInstance != NULL)
+		{
+			AnimInstance->Montage_Play(FireAnimation, 1.0f);
+		}
+	}
 }
 
 void APlutoPlayerCharacter::TurnAtRate(float Rate)
@@ -219,7 +254,7 @@ void APlutoPlayerCharacter::TriggerProne()
 			{
 				UE_LOG(LogPlutoCore, Log, TEXT("%s: Should dolphin dive"), *GetName());
 				FVector XYZVelocity = CharacterMovementComponent->Velocity;
-				XYZVelocity.Z = 650.0f;
+				XYZVelocity.Z = 550.0f;
 		        CharacterMovementComponent->Launch(XYZVelocity);
 		        StopSprint();
 			}
@@ -227,7 +262,7 @@ void APlutoPlayerCharacter::TriggerProne()
 			//GetCapsuleComponent()->SetCapsuleHalfHeight(20.0f, true);
 			ACharacter::Crouch();
 			FirstPersonCamera->SetRelativeLocation(FVector(-39.65f, 1.75f, 20.0f));
-			CharacterMovementComponent->MaxWalkSpeed = WalkSpeed/4;
+			CharacterMovementComponent->MaxWalkSpeed = WalkSpeed*0.05;
 			IsProne = true;
 			IsStanding = false;
 			UE_LOG(LogPlutoCore, Log, TEXT("%s: IsProne: %d"), *GetName(), IsProne);
@@ -243,7 +278,7 @@ void APlutoPlayerCharacter::TriggerSprint()
 	{
 		if(!IsStanding)
 		{
-			return;
+			TriggerCrouch();
 		}
 		if(IsSprinting)
 		{

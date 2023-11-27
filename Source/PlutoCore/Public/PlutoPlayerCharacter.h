@@ -99,6 +99,26 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
 	UInputAction* inputToProne;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
+	UInputAction* inputToShoot;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character Movement")
 	UCharacterMovementComponent* CharacterMovementComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class ABulletProjectile> Projectile;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		class USoundBase* FireSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		class UAnimMontage* FireAnimation;
+
+	class UAnimInstance* AnimInstance;
+
+	class UWorld* World;
+
+	FRotator SpawnRotation;
+	FVector SpawnLocation;
+
 };
