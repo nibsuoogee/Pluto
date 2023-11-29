@@ -7,7 +7,8 @@ public class PlutoCore : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 		bEnforceIWYU = true;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine",
+		 "InputCore", "EnhancedInput", "AIModule" });
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 	}
 }
