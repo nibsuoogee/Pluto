@@ -89,7 +89,12 @@ void APlutoEnemy::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult& Hit)
 {
+	APlutoPlayerCharacter* Character = Cast<APlutoPlayerCharacter>(OtherActor);
 
+	if(Character)
+	{
+		Character->DealDamage(DamageValue);
+	}
 }
 
 void APlutoEnemy::OnSensed(const TArray<AActor*>& UpdatedActors)
@@ -138,5 +143,10 @@ void APlutoEnemy::SetNewRotation(FVector TargetPosition, FVector CurrentPosition
 
 void APlutoEnemy::DealDamage(float DamageAmount)
 {
+	Health -= DamageAmount;
 
+	if(Health <= 0.0f)
+	{
+		Destroy();
+	}
 }

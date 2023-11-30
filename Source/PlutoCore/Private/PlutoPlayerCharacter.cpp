@@ -301,3 +301,16 @@ void APlutoPlayerCharacter::StopSprint()
 		IsSprinting = false;
 	}
 }
+
+void APlutoPlayerCharacter::DealDamage(float DamageAmount)
+{
+	Health -= DamageAmount;
+
+	if(Health <= 0.0f)
+	{
+		// restart game
+
+		
+		Destroy();
+	}
+}

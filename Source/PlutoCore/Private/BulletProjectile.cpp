@@ -3,7 +3,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
-//#include "Enemy.h"
+#include "PlutoEnemy.h"
 
 // Sets default values
 ABulletProjectile::ABulletProjectile()
@@ -46,5 +46,10 @@ void ABulletProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult& Hit)
 {
-
+	APlutoEnemy* Enemy = Cast<APlutoEnemy>(OtherActor);
+	if(Enemy)
+	{
+		Enemy->DealDamage(DamageValue);
+		Destroy();
+	}
 }
