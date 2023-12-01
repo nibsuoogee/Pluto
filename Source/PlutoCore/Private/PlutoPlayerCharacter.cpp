@@ -11,6 +11,8 @@
 #include "Animation/AnimInstance.h"
 #include "Kismet/GameplayStatics.h"
 
+#include "PlutoBaseGameMode.h"
+
 #include "Log.h"
 
 APlutoPlayerCharacter::APlutoPlayerCharacter()
@@ -309,8 +311,11 @@ void APlutoPlayerCharacter::DealDamage(float DamageAmount)
 	if(Health <= 0.0f)
 	{
 		// restart game
-
-		
+		APlutoBaseGameMode* MyGameMode = Cast<APlutoBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (MyGameMode)
+		{
+			MyGameMode->RestartGameplay(false);
+		}
 		Destroy();
 	}
 }

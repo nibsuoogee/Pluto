@@ -14,4 +14,21 @@ class PLUTOCORE_API APlutoBaseGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
+public:
+	void RestartGameplay(bool Won);
+
+private:
+	void ResetLevel();
+
+public:
+	UPROPERTY(BlueprintReadOnly)
+		int TimerCount = 300;
+
+private:
+	FTimerHandle CountDownTimerHandle = FTimerHandle();
+
+	void CountDownTimer();
+
+public:
+	void BeginPlay() override;
 };
