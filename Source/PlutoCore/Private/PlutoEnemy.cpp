@@ -8,6 +8,8 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
+#include "Log.h"
+
 // Sets default values
 APlutoEnemy::APlutoEnemy()
 {
@@ -33,7 +35,7 @@ APlutoEnemy::APlutoEnemy()
 	AIPerComp->OnPerceptionUpdated.AddDynamic(this, &APlutoEnemy::OnSensed);
 
 	CurrentVelocity = FVector::ZeroVector;
-	MovementSpeed = 375.0f;
+	MovementSpeed = 200.0f;
 
 	DistanceSquared = BIG_NUMBER;
 
@@ -99,13 +101,20 @@ void APlutoEnemy::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 
 void APlutoEnemy::OnSensed(const TArray<AActor*>& UpdatedActors)
 {
+	
 	for(int i = 0; i < UpdatedActors.Num(); i++)
 	{
 		FActorPerceptionBlueprintInfo Info;
 
 		AIPerComp->GetActorsPerception(UpdatedActors[i], Info);
+		UE_LOG(LogPlutoCore, Log, TEXT("sensed: %s"), *UpdatedActors[i]->GetClass()->GetName());
+		bool is_player = false; 
+		if(UpdatedActors[i]->IsA(APlutoPlayerCharacter::StaticClass()))
+		{
+			is_player = true; 
+		}
 
-		if(Info.LastSensedStimuli[0].WasSuccessfullySensed())
+		if(Info.LastSensedStimuli[0].WasSuccessfullySensed() && is_player)
 		{
 			FVector dir = UpdatedActors[i]->GetActorLocation() - GetActorLocation();
 			dir.Z = 0.0f;
