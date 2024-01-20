@@ -35,7 +35,7 @@ APlutoEnemy::APlutoEnemy()
 	AIPerComp->OnPerceptionUpdated.AddDynamic(this, &APlutoEnemy::OnSensed);
 
 	CurrentVelocity = FVector::ZeroVector;
-	MovementSpeed = 200.0f;
+	MovementSpeed = 100.0f;
 
 	DistanceSquared = BIG_NUMBER;
 
@@ -104,17 +104,17 @@ void APlutoEnemy::OnSensed(const TArray<AActor*>& UpdatedActors)
 	
 	for(int i = 0; i < UpdatedActors.Num(); i++)
 	{
+		
+		if(!UpdatedActors[i]->IsA(APlutoPlayerCharacter::StaticClass()))
+		{	
+			continue;
+		}
+
 		FActorPerceptionBlueprintInfo Info;
 
 		AIPerComp->GetActorsPerception(UpdatedActors[i], Info);
-		UE_LOG(LogPlutoCore, Log, TEXT("sensed: %s"), *UpdatedActors[i]->GetClass()->GetName());
-		bool is_player = false; 
-		if(UpdatedActors[i]->IsA(APlutoPlayerCharacter::StaticClass()))
-		{
-			is_player = true; 
-		}
 
-		if(Info.LastSensedStimuli[0].WasSuccessfullySensed() && is_player)
+		if(Info.LastSensedStimuli[0].WasSuccessfullySensed())
 		{
 			FVector dir = UpdatedActors[i]->GetActorLocation() - GetActorLocation();
 			dir.Z = 0.0f;
@@ -122,7 +122,6 @@ void APlutoEnemy::OnSensed(const TArray<AActor*>& UpdatedActors)
 			CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
 
 			SetNewRotation(UpdatedActors[i]->GetActorLocation(), GetActorLocation());
-
 		}
 		else
 		{
@@ -137,6 +136,8 @@ void APlutoEnemy::OnSensed(const TArray<AActor*>& UpdatedActors)
 				SetNewRotation(BaseLocation, GetActorLocation());
 			}
 		}
+
+		
 	}
 }
 
