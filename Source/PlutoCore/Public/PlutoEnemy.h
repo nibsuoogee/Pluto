@@ -55,7 +55,7 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 		float MovementSpeed;
 
-	void SetNewRotation(FVector TargetPosition, FVector CurrentPosition);
+	void SetNewRotation(FVector TargetPosition, FVector CurrentPosition, float DeltaTime);
 
 	bool BackToBaseLocation;
 	FVector NewLocation;

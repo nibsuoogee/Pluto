@@ -7,6 +7,7 @@
 #include "PlutoPlayerCharacter.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "Kismet/KismetMathLibrary.h"
 
 #include "Log.h"
 
@@ -24,7 +25,7 @@ APlutoEnemy::APlutoEnemy()
 
 	SightConfig->SightRadius = 1250.0f;
 	SightConfig->LoseSightRadius = 1280.0f;
-	SightConfig->PeripheralVisionAngleDegrees = 90.0f;
+	SightConfig->PeripheralVisionAngleDegrees = 120.0f;
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
@@ -60,6 +61,7 @@ void APlutoEnemy::Tick(float DeltaTime)
 	{
 		NewLocation = GetActorLocation() + CurrentVelocity * DeltaTime;
 
+		SetNewRotation(NewLocation, GetActorLocation(), DeltaTime);
 		if(BackToBaseLocation)
 		{
 			if((NewLocation-BaseLocation).SizeSquared2D() < DistanceSquared)
@@ -72,12 +74,13 @@ void APlutoEnemy::Tick(float DeltaTime)
 				DistanceSquared = BIG_NUMBER;
 				BackToBaseLocation = false;
 
-				SetNewRotation(GetActorForwardVector(), GetActorLocation());
+				
 			}
 		}
 
 		SetActorLocation(NewLocation);
 	}
+
 }
 
 // Called to bind functionality to input
@@ -120,8 +123,6 @@ void APlutoEnemy::OnSensed(const TArray<AActor*>& UpdatedActors)
 			dir.Z = 0.0f;
 
 			CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
-
-			SetNewRotation(UpdatedActors[i]->GetActorLocation(), GetActorLocation());
 		}
 		else
 		{
@@ -132,23 +133,23 @@ void APlutoEnemy::OnSensed(const TArray<AActor*>& UpdatedActors)
 			{
 				CurrentVelocity = dir.GetSafeNormal() * MovementSpeed;
 				BackToBaseLocation = true;
-
-				SetNewRotation(BaseLocation, GetActorLocation());
 			}
 		}
-
-		
 	}
 }
 
-void APlutoEnemy::SetNewRotation(FVector TargetPosition, FVector CurrentPosition)
+void APlutoEnemy::SetNewRotation(FVector TargetPosition, FVector CurrentPosition, float DeltaTime)
 {
-	FVector NewDirection = TargetPosition - CurrentPosition;
-	NewDirection.Z = 0.0f;
+	float InterpSpeed = 5.0f;
 
-	EnemyRotation = NewDirection.Rotation();
+	FVector TargetDirection = TargetPosition - CurrentPosition;
+	TargetDirection.Z = 0.0f;
 
-	SetActorRotation(EnemyRotation);
+	FRotator CurrentRotation = GetActorRotation();
+	FRotator TargetRotation = TargetDirection.Rotation();
+
+	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, InterpSpeed);
+	SetActorRotation(NewRotation);
 }
 
 void APlutoEnemy::DealDamage(float DamageAmount)
