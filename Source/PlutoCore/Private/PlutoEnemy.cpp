@@ -9,6 +9,8 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Kismet/KismetMathLibrary.h"
 
+#include "Kismet/GameplayStatics.h"
+
 #include "Log.h"
 
 // Sets default values
@@ -46,6 +48,7 @@ APlutoEnemy::APlutoEnemy()
 void APlutoEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	World = GetWorld();
 	
 	DamageCollision->OnComponentBeginOverlap.AddDynamic(this, &APlutoEnemy::OnHit);
 
@@ -81,6 +84,14 @@ void APlutoEnemy::Tick(float DeltaTime)
 		SetActorLocation(NewLocation);
 	}
 
+}
+
+void APlutoEnemy::OnFootStep()
+{
+	if(World != NULL)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, FootStepSound, GetActorLocation());
+	}
 }
 
 // Called to bind functionality to input

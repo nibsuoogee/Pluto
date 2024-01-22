@@ -19,6 +19,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void OnFootStep();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -61,11 +63,16 @@ public:
 	FVector NewLocation;
 	float DistanceSquared;
 
+	class UWorld* World;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		float Health = 100.0f;
 
 	UPROPERTY(EditAnywhere)
 		float DamageValue = 5.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		class USoundBase* FootStepSound;
 
 public:
 	void DealDamage(float DamageAmount);
