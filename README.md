@@ -4,7 +4,7 @@ An indie, survival horror experience where your main objective is to keep your b
 
 In order to stay warm, you must keep the sauna oven stocked with energy rich timber, so make use of the nearby forest. 
 
-Once the oven is fueled and the fire a'blaze, kick back and throw some water onto the rocks to raise heat and enjoy the steam.
+Once the oven is fuelled and the fire a 'blaze, kick back and throw some water onto the rocks to raise heat and enjoy the steam.
 
 *... "Who's that knocking on the door?"*
 
