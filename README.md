@@ -1,6 +1,15 @@
-# Pluto - An Unreal Engine FPS game
+# Snow Flake Bone Rake
 
-- Some general tags:
-  - FPS, co-op campaign, online multiplayer, roguelike
+An indie, survival horror experience where your main objective is to keep your body warm and your sauna free of zombie visitors.
 
-- Thanks to Alex Forsythe for this tutorial on a project structure for a game in Unreal: https://www.youtube.com/watch?v=94FvzO1HVzY.
+In order to stay warm, you must keep the sauna oven stocked with energy rich timber, so make use of the nearby forest. 
+
+Once the oven is fueled an the fire a'blaze, kick back and throw some water onto the rocks to raise heat and enjoy the steam.
+
+*... "Who's that knocking on the door?"*
+
+
+## Demo Video
+06/02/2024
+
+[![Development Demo Youtube Video](https://img.youtube.com/vi/-BEydouGe6s/0.jpg)](https://www.youtube.com/watch?v=-BEydouGe6s)
